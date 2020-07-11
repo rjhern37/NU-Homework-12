@@ -157,7 +157,6 @@ async function addEmployee(){
 
     newEmployee.role_id = roleId;
 
-
     const employees = await db.allEmployees();
 
     const employeeChoices = employees.map(e => {
@@ -167,7 +166,6 @@ async function addEmployee(){
         }
     })
 
-        
     const {managerId} = await inquirer.prompt([
         {
             type: "list",
@@ -186,6 +184,10 @@ async function addEmployee(){
 }
 
 async function updateEmployeeRole(){
+
+
+
+
     const updateRole = await db.updateRole();
 
     prompts();
@@ -200,11 +202,30 @@ async function viewEmployeeRole(){
 }
 
 async function addDepartment(){
-    const department = await db.addDepartment();
+
+    const newDepartment = {
+        department: null
+    }
+
+    const {newDepartmentName} = await inquirer.prompt([
+        {
+            type: "input",
+            message: "Please enter a name for the department you would like to create",
+            name: "newDepartmentName"
+
+        }
+    ])
+
+    newDepartment.department = newDepartmentName;
+
+    const addDepartment = await db.addDepartment(department);
 
 }
 
 async function addRole(){
+
+
+
     const role = await db.addRole();
 
 }
