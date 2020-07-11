@@ -6,13 +6,19 @@ class DB {
     }
     allEmployees(){
         return this.connection.query(
-            "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, from employee LEFT JOIN role on employee.role_id= role.id LEFT JOIN department on role.department_id= department.id"
+            "SELECT * FROM employee"
         )
     }
 
     allDepartments(){
         return this.connection.query(
-            "SELECT department.id, department.name, SUM(role.salary) AS budget from employee LEFT JOIN role on employee.role_id= role.id LEFT JOIN department on role.department_id= department.id"
+            "SELECT * FROM department"
+        )
+
+    }
+    allEmployeesByDepartment(departmentId){
+        return this.connection.query(
+            "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department department on role.department_id = department.id WHERE department.id = ?;", departmentId
         )
 
     }
@@ -23,7 +29,7 @@ class DB {
         )
     }
 
-    addEmployees(employee){
+    addEmployee(employee){
         return this.connection.query(
             "INSERT INTO employee SET ?", employee
         )

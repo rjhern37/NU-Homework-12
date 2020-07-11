@@ -1,7 +1,6 @@
 const inquirer = require("inquirer");
 
 const db = require("./db");
-const { addDepartment } = require("./db");
 
 require("console.table");
 
@@ -77,13 +76,13 @@ async function prompts(){
 
 }
 
-function viewAllEmployees(){
+async function viewAllEmployees(){
     const viewEmployee = await db.allEmployees();
     console.table(viewEmployee);
     prompts();
 }
 
-function viewEmployeesByDepartment(){
+async function viewEmployeesByDepartment(){
     const departments = await db.allDepartments();
     const departmentChoices = departments.map(({id, name}) => ({
         name: name,
@@ -98,33 +97,119 @@ function viewEmployeesByDepartment(){
         }
     ])
     
-    const employees = await db.allEmployees();
+    const employees = await db.allEmployeesByDepartment(departmentId);
     console.table(employees);
+    prompts();
 
     // console.table(departments);
 
 }
 
-function addEmployee(){
+async function addEmployee(){
+
+    const newEmployee = {
+        
+        first_name: null,
+        last_name: null,
+        role_id: null,
+
+        manager_id: null
+    }
+
+    const {firstName} = await inquirer.prompt([
+        {
+            type: "input",
+            message: "Please enter the employees first name",
+            name: "firstName"
+
+        }
+    ])
+
+    newEmployee.first_name = firstName;
+   
+    const {lastName} = await inquirer.prompt([
+        {
+            type: "input",
+            message: "Please enter the employees last name",
+            name: "lastName"
+
+        }
+    ])
+
+    newEmployee.last_name = lastName;
+
+    const roles =  await db.allRoles();
+
+    const roleChoices = roles.map(({id, title}) => ({
+        name: title,
+        value: id
+    }))
+
+    
+    const {roleId} = await inquirer.prompt([
+        {
+            type: "list",
+            name: "roleId",
+            message: "Set employee role",
+            choices: roleChoices
+        }
+    ])
+
+    newEmployee.role_id = roleId;
+
+
+    const employees = await db.allEmployees();
+
+    const employeeChoices = employees.map(e => {
+        return {
+            name: `${e.first_name} ${e.last_name}`,
+            value: e.id
+        }
+    })
+
+        
+    const {managerId} = await inquirer.prompt([
+        {
+            type: "list",
+            name: "managerId",
+            message: "Select Manager",
+            choices: employeeChoices
+        }
+    ])
+
+    newEmployee.manager_id = managerId;
+    
+    const addEmployee = await db.addEmployee(newEmployee);
+
+    prompts();
 
 }
 
-function updateEmployeeRole(){
+async function updateEmployeeRole(){
+    const updateRole = await db.updateRole();
+
+    prompts();
+}
+
+async function viewEmployeeRole(){
+
+
+
+    prompts();
 
 }
 
-function viewEmployeeRole(){
+async function addDepartment(){
+    const department = await db.addDepartment();
 
 }
 
-function addDepartment(){
+async function addRole(){
+    const role = await db.addRole();
 
 }
 
-function addRole(){
-
-}
-
-function quit(){
+async function quit(){
+    
 
 }
