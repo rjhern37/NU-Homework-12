@@ -24,8 +24,8 @@ async function prompts(){
                     value: "VIEW_EMPLOYEES"
                 },
                 {
-                    name: "View employees by department",
-                    value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
+                    name: "View all departments",
+                    value: "VIEW_DEPARTMENTS"
                 },
                 {
                     name: "Add employee",
@@ -36,8 +36,8 @@ async function prompts(){
                     value: "UPDATE_EMPLOYEE_ROLE"
                 },
                 {
-                    name: "View employee role",
-                    value: "VIEW_EMPLOYEE_ROLE"
+                    name: "View roles",
+                    value: "VIEW_ROLES"
                 },
                 {
                     name: "Add department",
@@ -59,14 +59,14 @@ async function prompts(){
     switch(choice){
         case "VIEW_EMPLOYEES":
             return viewAllEmployees()
-        case "VIEW_EMPLOYEES_BY_DEPARTMENT":
-            return viewEmployeesByDepartment()
+        case "VIEW_DEPARTMENTS":
+            return viewDepartments()
         case "ADD_EMPLOYEE":
             return addEmployee()
         case "UPDATE_EMPLOYEE_ROLE":
             return updateEmployeeRole()
-        case "VIEW_EMPLOYEE_ROLE":
-            return viewEmployeeRole()
+        case "VIEW_ROLES":
+            return viewRoles()
         case "ADD_DEPARTMENT":
             return addDepartment()
         case "ADD_ROLE":
@@ -78,33 +78,17 @@ async function prompts(){
 }
 
 async function viewAllEmployees(){
-    // setTimeout(() => console.log("Loading Employess..."), 3000);
     
     const viewEmployee = await db.allEmployees();
     console.table(viewEmployee);
     prompts();
 }
 
-async function viewEmployeesByDepartment(){
+async function viewDepartments(){
     const departments = await db.allDepartments();
-    const departmentChoices = departments.map(({id, name}) => ({
-        name: name,
-        value: id
-    }))
-    const {departmentId} = await inquirer.prompt([
-        {
-            type: "list",
-            name: "departmentId",
-            message: "Which department would you like to see employees for?",
-            choices: departmentChoices
-        }
-    ])
     
-    const employees = await db.allEmployeesByDepartment(departmentId);
-    console.table(employees);
+    console.table(departments);
     prompts();
-
-    // console.table(departments);
 
 }
 
@@ -235,38 +219,11 @@ async function updateEmployeeRole(){
 
 }
 
-async function viewEmployeeRole(){
+async function viewRoles(){
 
-
-    //Grab the employee 
-
-    const employees = await db.allEmployees();
-
-    const employeeChoices = employees.map(e => {
-        return {
-            name: `${e.first_name} ${e.last_name}`,
-            value: e.id
-        }
-    })
-
-    const {employeeId} = await inquirer.prompt([
-
-        {
-            message: "Which employees role would you like to see?",
-            type: "list",
-            name: "employeeId",
-            choices: employeeChoices
-        }
-
-    ])
-
-    const choosenEmployee = await db.viewRoles( employeeId );
-    console.table(choosenEmployee);
+    const roles = await db.allRoles();
     
-    
-
-
-
+    console.table(roles);
     prompts();
 
 }
@@ -274,36 +231,46 @@ async function viewEmployeeRole(){
 async function addDepartment(){
 
     const newDepartment = {
-        department: null
+        name: null
     }
 
-    const {newDepartmentName} = await inquirer.prompt([
+    const {departmentName} = await inquirer.prompt([
         {
             type: "input",
             message: "Please enter a name for the department you would like to create",
-            name: "newDepartmentName"
+            name: "departmentName"
 
         }
     ])
 
-    newDepartment.department = newDepartmentName;
+    newDepartment.name = departmentName;
 
-    const addDepartment = await db.addDepartment(department);
-    prompts();
+    const addNewDeparment = await db.addDepartment(newDepartment);
+    console.log("Adding Department...One moment...");
+
+    setTimeout(function(){prompts()}, 750);
 
 }
 
 async function addRole(){
 
+    const newRole = {
 
+        title: null,
+        salary: null,
+        department_id: null
+
+    }
 
     const {title} = await inquirer.prompt([
         {
             type: "input",
             name: "title",
-            message: "Which Role would you like to add?",
+            message: "What is the name of the Role would you like to add?",
         }
     ])
+
+    newRole.title = title;
 
     const {salary} = await inquirer.prompt([
         {
@@ -313,25 +280,35 @@ async function addRole(){
         }
     ])
 
+    newRole.salary = salary;
+
+
+    const departments = await db.allDepartments();
+    const departmentChoices = departments.map(({id, name}) => ({
+        name: name,
+        value: id
+    }))
+
     const {departmentId} = await inquirer.prompt([
         {
             type: "list",
             name: "departmentId",
-            message: "Which department does this ",
-            choices: employeeChoices
+            message: "Which department does this role belong to?",
+            choices: departmentChoices
         }
     ])
 
+    newRole.department_id = departmentId;
 
+    const createdRole = await db.addRole(newRole);
 
-    const role = await db.addRole();
-    prompts();
+    console.log("Adding Role...One moment...");
+
+    setTimeout(function(){prompts()}, 750);
 
 }
 
 async function quit(){
-
-
 
     const {quit} = await inquirer.prompt([
         {
@@ -342,8 +319,9 @@ async function quit(){
 
         
     ])
-
-
-    
-
+    if(quit){
+        process.exit();
+    } else {
+        prompts();
+    }
 }
