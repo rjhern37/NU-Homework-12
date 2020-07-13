@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 
 const db = require("./db");
+const connection = require("./db/connection");
 
 require("console.table");
 
@@ -77,6 +78,8 @@ async function prompts(){
 }
 
 async function viewAllEmployees(){
+    // setTimeout(() => console.log("Loading Employess..."), 3000);
+    
     const viewEmployee = await db.allEmployees();
     console.table(viewEmployee);
     prompts();
@@ -185,15 +188,82 @@ async function addEmployee(){
 
 async function updateEmployeeRole(){
 
+    const employees = await db.allEmployees();
 
+    const employeeChoices = employees.map(e => {
+        return {
+            name: `${e.first_name} ${e.last_name}`,
+            value: e.id
+        }
+    })
 
+    const {employeeId} = await inquirer.prompt([
 
-    const updateRole = await db.updateRole();
+        {
+            message: "Which employees role would you like to update?",
+            type: "list",
+            name: "employeeId",
+            choices: employeeChoices
+        }
 
-    prompts();
+    ])
+
+    const roles = await db.allRoles();
+
+    const roleChoices = roles.map(e => {
+        return {
+            name: e.title,
+            value: e.id
+        }
+    })
+
+    const {roleId} = await inquirer.prompt([
+
+        {
+            message: "Which role do you want to assign the selected employee?",
+            type: "list",
+            name: "roleId",
+            choices: roleChoices
+        }
+
+    ])
+
+    await db.updateRole(employeeId, roleId);
+    console.log("Updating Role...One moment...");
+
+    setTimeout(function(){prompts()}, 750);
+
 }
 
 async function viewEmployeeRole(){
+
+
+    //Grab the employee 
+
+    const employees = await db.allEmployees();
+
+    const employeeChoices = employees.map(e => {
+        return {
+            name: `${e.first_name} ${e.last_name}`,
+            value: e.id
+        }
+    })
+
+    const {employeeId} = await inquirer.prompt([
+
+        {
+            message: "Which employees role would you like to see?",
+            type: "list",
+            name: "employeeId",
+            choices: employeeChoices
+        }
+
+    ])
+
+    const choosenEmployee = await db.viewRoles( employeeId );
+    console.table(choosenEmployee);
+    
+    
 
 
 
@@ -219,6 +289,7 @@ async function addDepartment(){
     newDepartment.department = newDepartmentName;
 
     const addDepartment = await db.addDepartment(department);
+    prompts();
 
 }
 
@@ -226,11 +297,53 @@ async function addRole(){
 
 
 
+    const {title} = await inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "Which Role would you like to add?",
+        }
+    ])
+
+    const {salary} = await inquirer.prompt([
+        {
+            type: "input",
+            name: "salary",
+            message: "Please enter the salary for the role",
+        }
+    ])
+
+    const {departmentId} = await inquirer.prompt([
+        {
+            type: "list",
+            name: "departmentId",
+            message: "Which department does this ",
+            choices: employeeChoices
+        }
+    ])
+
+
+
     const role = await db.addRole();
+    prompts();
 
 }
 
 async function quit(){
+
+
+
+    const {quit} = await inquirer.prompt([
+        {
+            type: "confirm",
+            name: "quit",
+            message: "Do you want to quit the application?",
+        },
+
+        
+    ])
+
+
     
 
 }
