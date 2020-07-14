@@ -24,10 +24,6 @@ async function prompts(){
                     value: "VIEW_EMPLOYEES"
                 },
                 {
-                    name: "View all departments",
-                    value: "VIEW_DEPARTMENTS"
-                },
-                {
                     name: "Add employee",
                     value: "ADD_EMPLOYEE"
                 },
@@ -36,12 +32,16 @@ async function prompts(){
                     value: "UPDATE_EMPLOYEE_ROLE"
                 },
                 {
-                    name: "View roles",
-                    value: "VIEW_ROLES"
+                    name: "View all departments",
+                    value: "VIEW_DEPARTMENTS"
                 },
                 {
                     name: "Add department",
                     value: "ADD_DEPARTMENT"
+                },
+                {
+                    name: "View roles",
+                    value: "VIEW_ROLES"
                 },
                 {
                     name: "Add role",
