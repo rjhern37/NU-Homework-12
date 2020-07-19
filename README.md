@@ -27,7 +27,9 @@ npm i
 
 
 ## Usage
-Simply clone the repo and type npm i into your preferred CLI and enjoy!
+Simply clone the repo and type npm i into your preferred CLI and enjoy! Here is a demo of the app:
+<iframe src="https://player.vimeo.com/video/439812223" width="640" height="480" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
 
 ## Test
 There are no current tests for this app
