@@ -28,7 +28,7 @@ npm i
 
 ## Usage
 Simply clone the repo and type npm i into your preferred CLI and enjoy! Here is a demo of the app:
-<a src="https://player.vimeo.com/video/439812223" width="320" height="240" controls>
+<a href="https://player.vimeo.com/video/439812223" width="320" height="240" controls>
 Click here!!!
 </a> 
 
