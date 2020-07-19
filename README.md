@@ -28,9 +28,8 @@ npm i
 
 ## Usage
 Simply clone the repo and type npm i into your preferred CLI and enjoy! Here is a demo of the app:
-<video width="320" height="240" controls>
-  <source src="https://player.vimeo.com/video/439812223" type="video/mp4">
-</video> 
+[![Demo video](https://player.vimeo.com/video/439812223)]
+
 
 ## Test
 There are no current tests for this app
